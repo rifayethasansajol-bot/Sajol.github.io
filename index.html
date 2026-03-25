@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifayet Hasan Sajol — Visual Storyteller</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0e0c0a;
+    --paper: #f5f0e8;
+    --cream: #ede7d5;
+    --accent: #c8531a;
+    --gold: #b8902a;
+    --muted: #7a7060;
+    --light-ink: #2a2520;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.35s ease;
+    opacity: 0.6;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: multiply;
+  }
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 60px 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 5.5vw, 88px);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--ink);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-bio {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 440px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.6s forwards;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.7s forwards;
+  }
+  .stat-item {}
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 20px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.85s forwards;
+  }
+  .btn-primary {
+    padding: 14px 32px;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(200,83,26,0.3);
+  }
+  .btn-secondary {
+    padding: 14px 32px;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: none;
+  }
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-image-box {
+    position: absolute;
+    inset: 0;
+    background: var(--cream);
+  }
+  .hero-photo {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    filter: sepia(15%) contrast(1.05);
+  }
+  .hero-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, var(--accent) 200%);
+    mix-blend-mode: multiply;
+    opacity: 0.3;
+  }
+  .hero-vertical-text {
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+  }
+
+  /* photo placeholder */
+  .photo-placeholder {
+    width: 100%; height: 100%;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .photo-initials {
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    font-weight: 900;
+    color: var(--ink);
+    opacity: 0.08;
+    line-height: 1;
+  }
+
+  /* Decorative line */
+  .hero-divider {
+    position: absolute;
+    bottom: 48px;
+    left: 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 1s forwards;
+  }
+  .divider-line {
+    width: 48px;
+    height: 1px;
+    background: var(--muted);
+  }
+  .divider-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* SECTION COMMONS */
+  section {
+    padding: 120px 60px;
+    position: relative;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 80px;
+  }
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 60px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--cream);
+    margin-left: 16px;
+  }
+
+  /* IMPACT */
+  .impact-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 100px 60px;
+  }
+  .impact-section .section-title { color: var(--paper); }
+  .impact-section .section-number { color: var(--accent); }
+  .impact-section .section-line { background: rgba(255,255,255,0.1); }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-bottom: 80px;
+  }
+  .impact-card {
+    background: rgba(255,255,255,0.04);
+    padding: 48px 40px;
+    border: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .impact-card:hover { background: rgba(200,83,26,0.12); }
+  .impact-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--accent);
+    transition: height 0.5s ease;
+  }
+  .impact-card:hover::before { height: 100%; }
+  .impact-big-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--paper);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .impact-unit {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--accent);
+  }
+  .impact-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(245,240,232,0.5);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .impact-context {
+    font-size: 13px;
+    color: rgba(245,240,232,0.3);
+    margin-top: 8px;
+  }
+
+  .impact-story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .impact-story-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--paper);
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+  .impact-story-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.55);
+  }
+  .impact-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .impact-tag {
+    padding: 6px 14px;
+    border: 1px solid rgba(200,83,26,0.4);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* EXPERIENCE */
+  .experience-section { background: var(--paper); }
+  .exp-timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .exp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .exp-item {
+    position: relative;
+    padding: 0 0 72px 60px;
+  }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 8px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 3px rgba(200,83,26,0.2);
+  }
+  .exp-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .exp-role {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .exp-company {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .exp-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--light-ink);
+    max-width: 680px;
+    margin-bottom: 24px;
+  }
+  .exp-achievements {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .exp-achievements li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-left: 20px;
+    position: relative;
+  }
+  .exp-achievements li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  /* SKILLS */
+  .skills-section { background: var(--cream); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+  .skill-category-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(200,83,26,0.2);
+  }
+  .skill-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .skill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .skill-name {
+    font-size: 14px;
+    color: var(--light-ink);
+    min-width: 140px;
+  }
+  .skill-bar-bg {
+    flex: 1;
+    height: 2px;
+    background: rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skill-bar-fill.animate { transform: scaleX(1); }
+  .skill-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .skill-tool {
+    padding: 7px 14px;
+    background: var(--paper);
+    border: 1px solid rgba(0,0,0,0.08);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--light-ink);
+    transition: all 0.3s;
+  }
+  .skill-tool:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  /* AWARDS & COLLAB */
+  .awards-section { background: var(--paper); }
+  .awards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .award-card {
+    padding: 40px;
+    border: 1px solid var(--cream);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s, border-color 0.4s;
+    background: var(--paper);
+  }
+  .award-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(200,83,26,0.3);
+  }
+  .award-icon {
+    font-size: 28px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .award-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .award-org {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .award-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--ink);
+    color: var(--paper);
+    text-align: center;
+    padding: 140px 60px;
+  }
+  .contact-pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .contact-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 6vw, 96px);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--paper);
+    margin-bottom: 48px;
+  }
+  .contact-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-top: 64px;
+  }
+  .contact-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--paper);
+    transition: color 0.3s;
+  }
+  .contact-link:hover { color: var(--accent); }
+  .contact-link-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .contact-link-value {
+    font-size: 15px;
+    color: inherit;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(245,240,232,0.25);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 360px; }
+    .hero-left { padding: 100px 24px 60px; }
+    .impact-grid { grid-template-columns: 1fr 1fr; }
+    .impact-story { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .awards-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 28px; }
+    .contact-links { gap: 28px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .impact-section { padding: 80px 24px; }
+    .contact-section { padding: 100px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">RHS — Portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#awards">Awards</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag">Visual Storyteller · Designer · Creative Director</p>
+    <h1 class="hero-name">Rifayet<br>Hasan <em>Sajol</em></h1>
+    <p class="hero-bio">Six years of turning ideas into vibrant, meaningful content — across photography, videography, motion graphics, and design. I craft visuals that strengthen brand identity and showcase real-world impact.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-number">6+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Projects Delivered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Global Orgs</div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary">Let's Work Together</a>
+      <a href="https://behance.net/rifayetgpa434e" target="_blank" class="btn-secondary">View Portfolio</a>
+    </div>
+    <div class="hero-divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">Mirpur-1, Dhaka · Available for Remote & On-site</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image-box">
+      <div class="photo-placeholder">
+        <div class="photo-initials">RHS</div>
+      </div>
+      <div class="hero-image-overlay"></div>
+    </div>
+    <span class="hero-vertical-text">Visual Storyteller · Dhaka, Bangladesh</span>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="impact-section" id="impact">
+  <div class="section-header">
+    <span class="section-number">01</span>
+    <h2 class="section-title">Real <em>Impact</em></h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="impact-grid reveal">
+    <div class="impact-card">
+      <div class="impact-big-number">50<span class="impact-unit">K+</span></div>
+      <div class="impact-desc">New Followers Gained</div>
+      <div class="impact-context">AYAT Education page growth via ADB campaign</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-big-number">10<span class="impact-unit">M</span></div>
+      <div class="impact-desc">Total Reach</div>
+      <div class="impact-context">Long-Term Care campaign with ADB</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-big-number">5<span class="impact-unit">M</span></div>
+      <div class="impact-desc">Video Views</div>
+      <div class="impact-context">Impact-story video series production</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-big-number">30<span class="impact-unit">K</span></div>
+      <div class="impact-desc">Engagements</div>
+      <div class="impact-context">Cross-platform campaign engagement</div>
+    </div>
+  </div>
+
+  <div class="impact-story reveal">
+    <div>
+      <h3 class="impact-story-title">ADB × AYAT Education<br>Long-Term Care Campaign</h3>
+      <p class="impact-story-body">Led the complete visual strategy and creative direction for the ADB-collaborated Long-Term Care for Elderly People campaign. This project didn't just look good — it moved people. The result was one of the most impactful social media campaigns in AYAT Education's history, with organic growth that no paid ad budget could easily replicate.</p>
+      <div class="impact-tags">
+        <span class="impact-tag">Creative Direction</span>
+        <span class="impact-tag">Social Strategy</span>
+        <span class="impact-tag">Video Production</span>
+        <span class="impact-tag">ADB Collaboration</span>
+        <span class="impact-tag">UN Women</span>
+      </div>
+    </div>
+    <div>
+      <h3 class="impact-story-title">Also Collaborated With</h3>
+      <p class="impact-story-body">Across six years, worked directly with globally recognized organizations to produce communication materials that meet international standards.</p>
+      <div class="impact-tags" style="margin-top:16px">
+        <span class="impact-tag">ADB</span>
+        <span class="impact-tag">UN Women</span>
+        <span class="impact-tag">Nike Bangladesh</span>
+        <span class="impact-tag">Reckitt Benckiser</span>
+        <span class="impact-tag">Mutual Trust Bank</span>
+        <span class="impact-tag">BBS</span>
+        <span class="impact-tag">Daraz Bangladesh</span>
+        <span class="impact-tag">PRAN-RFL</span>
+        <span class="impact-tag">BRAC</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience-section" id="experience">
+  <div class="section-header reveal">
+    <span class="section-number">02</span>
+    <h2 class="section-title">Work <em>Experience</em></h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="exp-timeline">
+
+    <div class="exp-item reveal">
+      <div class="exp-date">August 2023 — Present</div>
+      <div class="exp-role">Visualizer / Assistant Manager, Communications</div>
+      <div class="exp-company">AYAT Education — A sister concern of Aman Group of Companies</div>
+      <p class="exp-body">Leading end-to-end multimedia production — from scripting and filming to motion graphics and campaign design. Managing junior designers, coordinating across departments, and ensuring visual consistency across all digital and print platforms.</p>
+      <ul class="exp-achievements">
+        <li>Scripted, filmed, and edited 20+ impact-story videos; covered 30+ events for campaigns and social media</li>
+        <li>Led full creative direction and branding for Bangladesh Care Forum 2025 in collaboration with ADB</li>
+        <li>Managed complete visual production for Care Forum 2024 in Bangkok with UN Women</li>
+        <li>Redesigned the AYAT Care website, elevating user experience and visual consistency</li>
+        <li>Delivered brand design, social media content, and vendor management for the ADB Validation & Dissemination Event on Long-Term Care</li>
+        <li>Generated 50K+ followers, 10M reach, 5M views, and 30K engagements through strategic visual campaigns</li>
+      </ul>
+    </div>
+
+    <div class="exp-item reveal reveal-delay-1">
+      <div class="exp-date">October 2022 — August 2023</div>
+      <div class="exp-role">Senior Executive, Graphic Designer</div>
+      <div class="exp-company">Mercari Asia Limited — A sister concern of Daraz Bangladesh</div>
+      <p class="exp-body">Collaborated with clients across healthcare, footwear, real estate, NGOs, and e-commerce to craft visually compelling designs. Developed pitch decks that helped win new business, and produced nationwide campaign materials reaching audiences across Bangladesh.</p>
+      <ul class="exp-achievements">
+        <li>Designed immersive event visuals including 3D booth graphics, signage, and stage backdrops</li>
+        <li>Created editorial materials: annual reports, eBooks, and brochures for complex communication needs</li>
+        <li>Produced nationwide campaign materials — billboards, posters, and flyers — for mass reach</li>
+        <li>Recognized as Employee of the Month at Daraz Bangladesh, April 2023</li>
+        <li>Designed brand identity for Nike's launch in Bangladesh, ensuring global alignment</li>
+      </ul>
+    </div>
+
+    <div class="exp-item reveal reveal-delay-2">
+      <div class="exp-date">March 2019 — September 2022</div>
+      <div class="exp-role">Creative Associate, Communications</div>
+      <div class="exp-company">Bangladesh Youth Leadership Center (BYLC)</div>
+      <p class="exp-body">Planned and designed program content and marketing materials across video and static formats. Maintained website content, social media communication, and drove marketing campaigns for national leadership programs.</p>
+      <ul class="exp-achievements">
+        <li>Designed worldwide campaign materials for Global Youth Climate Summit 2021 — 3,500+ applications from 128+ countries</li>
+        <li>Designed Interactive Digital Workbooks for 5 leadership programs (LFK, BBLTJ, BBLT, APL, YLS)</li>
+        <li>Conceptualized and designed Annual Report for Reckitt Benckiser (Bangladesh) PLC</li>
+        <li>Designed Time Use Survey 2021 report for BBS in collaboration with UN Women Bangladesh</li>
+        <li>Created and maintained digital and printable materials for 20+ BYLC programs</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section" id="skills">
+  <div class="section-header reveal">
+    <span class="section-number">03</span>
+    <h2 class="section-title">Skills &amp; <em>Tools</em></h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-grid">
+    <div class="reveal">
+      <div class="skill-category-title">Creative Disciplines</div>
+      <div class="skill-items">
+        <div class="skill-item">
+          <span class="skill-name">Graphic Design</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">UI/UX Design</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Motion Graphics</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Video Production</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="82%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Brand Identity</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Social Media Strategy</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Campaign Planning</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="78%"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Copywriting</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-1">
+      <div class="skill-category-title">Software & Tools</div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:20px; font-family:'DM Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">Design</p>
+      <div class="skill-tools" style="margin-bottom:28px;">
+        <span class="skill-tool">Adobe Photoshop</span>
+        <span class="skill-tool">Adobe Illustrator</span>
+        <span class="skill-tool">Adobe InDesign</span>
+        <span class="skill-tool">Figma</span>
+      </div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:20px; font-family:'DM Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">Video & Motion</p>
+      <div class="skill-tools" style="margin-bottom:28px;">
+        <span class="skill-tool">Adobe Premiere Pro</span>
+        <span class="skill-tool">Adobe After Effects</span>
+        <span class="skill-tool">FL Studio</span>
+      </div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:20px; font-family:'DM Mono',monospace; letter-spacing:0.05em; text-transform:uppercase;">AI Tools</p>
+      <div class="skill-tools">
+        <span class="skill-tool">Adobe Firefly</span>
+        <span class="skill-tool">Leonardo AI</span>
+        <span class="skill-tool">DALL·E</span>
+        <span class="skill-tool">Freepik AI</span>
+        <span class="skill-tool">ChatGPT</span>
+        <span class="skill-tool">Grok AI</span>
+        <span class="skill-tool">Gemini</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section class="awards-section" id="awards">
+  <div class="section-header reveal">
+    <span class="section-number">04</span>
+    <h2 class="section-title">Awards &amp; <em>Recognition</em></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="awards-grid">
+    <div class="award-card reveal">
+      <span class="award-icon">🏆</span>
+      <div class="award-title">National Award-Winning Annual Report</div>
+      <div class="award-org">Mutual Trust Bank Ltd. · Bronze Award, Private Sector Banks · 2023</div>
+      <p class="award-desc">Designed the annual report that received the national Bronze Award in the Private Sector Banks category — recognized for design excellence and communication clarity.</p>
+    </div>
+    <div class="award-card reveal reveal-delay-1">
+      <span class="award-icon">⭐</span>
+      <div class="award-title">Employee of the Month</div>
+      <div class="award-org">Daraz Bangladesh · April 2023</div>
+      <p class="award-desc">Recognized for outstanding contributions in creative design and project delivery across multiple high-priority campaigns at one of Bangladesh's largest e-commerce platforms.</p>
+    </div>
+    <div class="award-card reveal reveal-delay-2">
+      <span class="award-icon">🌍</span>
+      <div class="award-title">Global Youth Climate Summit 2021</div>
+      <div class="award-org">BYLC · Worldwide Campaign</div>
+      <p class="award-desc">Designed month-long worldwide campaign materials that attracted 3,500+ applications from 128+ countries — a truly global creative impact.</p>
+    </div>
+    <div class="award-card reveal reveal-delay-3">
+      <span class="award-icon">🎓</span>
+      <div class="award-title">Workshop Facilitator</div>
+      <div class="award-org">BRAC University Electrical Engineering Career Club · December 2023</div>
+      <p class="award-desc">Conducted a workshop on Fundamentals of Graphic Design for 45+ students — sharing knowledge and inspiring the next generation of designers.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <p class="contact-pre">Available for new opportunities</p>
+  <h2 class="contact-headline">Let's Create<br><em>Something</em><br>Remarkable</h2>
+  <a href="mailto:rifayethasansajol@gmail.com" class="btn-primary" style="display:inline-block; margin-top:8px;">Send a Message</a>
+  <div class="contact-links">
+    <a href="tel:+8801750201360" class="contact-link">
+      <span class="contact-link-label">Phone</span>
+      <span class="contact-link-value">+880 1750-201360</span>
+    </a>
+    <a href="mailto:rifayethasansajol@gmail.com" class="contact-link">
+      <span class="contact-link-label">Email</span>
+      <span class="contact-link-value">rifayethasansajol@gmail.com</span>
+    </a>
+    <a href="https://linkedin.com/in/rifayet-hasan-sajol/" target="_blank" class="contact-link">
+      <span class="contact-link-label">LinkedIn</span>
+      <span class="contact-link-value">rifayet-hasan-sajol</span>
+    </a>
+    <a href="https://behance.net/rifayetgpa434e" target="_blank" class="contact-link">
+      <span class="contact-link-label">Portfolio</span>
+      <span class="contact-link-value">behance.net/rifayetgpa434e</span>
+    </a>
+    <a href="#" class="contact-link">
+      <span class="contact-link-label">Location</span>
+      <span class="contact-link-value">Mirpur-1, Dhaka</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Rifayet Hasan Sajol — Visual Storyteller</p>
+  <p>Mirpur-1, Dhaka · Available Worldwide (Remote)</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX - 5 + 'px';
+    cursor.style.top = mouseY - 5 + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX - 18) * 0.12;
+    ringY += (mouseY - ringY - 18) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2.5)';
+      ring.style.transform = 'scale(1.5)';
+      ring.style.opacity = '0.3';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.transform = 'scale(1)';
+      ring.style.opacity = '0.6';
+    });
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Animate skill bars
+        entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+          bar.classList.add('animate');
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Also trigger skill bars when parent becomes visible
+  document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+    bar.style.width = bar.dataset.width;
+  });
+</script>
+</body>
+</html>
